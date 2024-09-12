@@ -1,0 +1,33 @@
+TERMINAL---------------------
+mkdir 	파일생성		ㅣ
+cd 	파일이동		ㅣ
+npm start npm 시작	ㅣ
+rm -rf 	파일 삭제		ㅣ
+npm install   npm설치	ㅣ
+npm install   --force 강제설치	
+npx를 이용해 리액트 앱 만들기
+npx create-react-app todo-react-app
+-----------------------------------------
+
+JSX문법 : 자바스크립트 코드 안에 HTML코드가 들어가는것
+Babel : JSX로 작성된 자바스크립트를 순수 자바스크립트로 만들어주는 라이브러리
+
+SPA 구동방식이 CSR
+SPA(Single Page Application)
+한 번 웹 페이지를 로딩하면 유저가 새로고침을 하지 않는 이상 페이지를 새로 로딩하지 않는다.
+
+CSR(Client Side Rendering)
+자바스크립트가 동적으로 HTML을 재구성해 만드는 클라이언트 렌더링 방식
+
+
+
+
+
+
+
+
+
+
+
+
+
