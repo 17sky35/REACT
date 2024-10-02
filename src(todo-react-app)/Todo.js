@@ -29,8 +29,11 @@ const Todo = (props) => {
     const editItem = props.editItem;
 
     const editEventHandler = (e) => {
-        item.title = e.target.value; // 변경만 해서는 렌더링이 안된다.
-        editItem(); // 없으면 아예 수정이 안됨
+        // item.title = e.target.value; // 변경만 해서는 렌더링이 안된다.
+        // editItem(); // 없으면 아예 수정이 안됨
+
+        //백엔드 연결----------------------------
+        setItem({...item,title:e.target.value})
     }
 
     // deletEventHandler 작성
@@ -41,7 +44,7 @@ const Todo = (props) => {
     // 체크박스변경
     const checkboxEventHandler = (e) => {
         item.done = e.target.checked;
-        editItem();
+        editItem(item);
     }
 
     // turnOffReadOnly 함수
@@ -54,6 +57,9 @@ const Todo = (props) => {
     const turnOnReadOnly = (e) => {
         if(e.key === 'Enter'){
             setReadOnly(true);
+
+            //백엔드 연결---------------------------
+            editItem(item);
         }
     }
 

@@ -1,42 +1,76 @@
 import logo from './logo.svg';
 import Todo from './Todo'; // Todo 컴포넌트 import
 import Count from './Count';
-import React,{ useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 import './App.css';
 import {Container,List,Paper} from "@mui/material";
 import AddTodo from './AddTodo';
+import axios from 'axios';
+import { call } from './service/ApiService';
 
 // 컴포넌트
 // 페이지에 렌더링할 React 엘리먼트를 반환하는 작고 재사용 가능한 코드조각
 function App() {
   const[items, setItems]= useState([])
 
-    // 추가
-    // 전체 데이터를 App.js에서 관리하기 때문에 함수를 App.js에 작성함
-    const addItem = (item) => {
-      item.id = 'ID-' + items.length;
-      item.done = false; // done 초기화
-      // ... : 스프레드연산자
-      // 배열이나 객체의 요소를 개별적으로 펼쳐서 다른 배열이나 객체에 삽입할 때 사용한다.
-      // 리액트에서 상태를 업데이트할 때 사용한다.
-      setItems([...items,item]);
-      console.log("items : ", items)
-    }
+  useEffect(() => {
+    //백엔드에게 요청
+    // axios.get("http://localhost:9090/todo", {
+    //   headers: {
+    //       "Content-Type": "application/json"
+    //   }
+    // })
+    // .then(response => {
+    //     setItems(response.data); // response.data를 통해 서버에서 반환된 데이터를 처리
+    // })
+    // .catch(error => {
+    //     console.error("There was an error!", error); // 에러 처리
+    // });
+    call("/todo","GET") 
+    .then(result => setItems(result.data))
+  },[])
+  
+
+
+  // 추가
+  // 전체 데이터를 App.js에서 관리하기 때문에 함수를 App.js에 작성함
+  const addItem = (item) => {
+    // item.id = 'ID-' + items.length;
+    // item.done = false; // done 초기화
+    // // ... : 스프레드연산자
+    // // 배열이나 객체의 요소를 개별적으로 펼쳐서 다른 배열이나 객체에 삽입할 때 사용한다.
+    // // 리액트에서 상태를 업데이트할 때 사용한다.
+    // setItems([...items,item]);
+    // console.log("items : ", items)
+
     
-    //내용 수정
-    const editItem = () => {
-      setItems([...items])
-    }
+    //벡엔드 연결
+    call("/todo","POST",item)
+    .then(result => setItems(result.data))
+  }
+  
+  //내용 수정
+  const editItem = (item) => {
+    // setItems([...items])
+
+    //백엔드 연결---------------------------------
+    call("/todo","PUT",item)
+    .then(result => setItems(result.data))
+  }
     
 
-    // 삭제
-    const deleteItem = (item) => {
-      // 삭제할 아이템을 찾는다.
-      const newItems = items.filter( e => e.id !== item.id )
-      // 삭제할 아이템을 제외한 아이템을 다시 배열에 저장한다.
-      setItems([...newItems]);
-    }
-    // App.js에서 Todo에 deleteItem 연결하기
+  // 삭제
+  const deleteItem = (item) => {
+    // // 삭제할 아이템을 찾는다.
+    // const newItems = items.filter( e => e.id !== item.id )
+    // // 삭제할 아이템을 제외한 아이템을 다시 배열에 저장한다.
+    // setItems([...newItems]);
+
+    //백엔드 연결
+    call("/todo","DELETE",item)
+    .then(result => setItems(result.data))
+  }
+  // App.js에서 Todo에 deleteItem 연결하기
 
   // map() -> 반복문 안에 들어있는 내용을 하나씩 꺼내서 처리한다.
   // key : 요소의 리스트를 만들 때, React에서 컴포넌트를 렌더링 했을 때 

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Button, Grid, TextField} from "@mui/material";
 
 const AddTodo = (props) => {
+    //Todo의 정보를 저장할 수 있는 state
     const [item, setItem] = useState({title : ""});    
 
     // 새로운 객체를 배열에 추가해주는 메서드
