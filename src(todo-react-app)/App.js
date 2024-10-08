@@ -3,15 +3,18 @@ import Todo from './Todo'; // Todo 컴포넌트 import
 import Count from './Count';
 import React,{ useEffect, useState } from 'react';
 import './App.css';
-import {Container,List,Paper} from "@mui/material";
+import {Container,List,Paper,Grid,Button,AppBar,Toolbar,Typography} from "@mui/material";
 import AddTodo from './AddTodo';
 import axios from 'axios';
-import { call } from './service/ApiService';
+import { call, signout } from './service/ApiService';
 
 // 컴포넌트
 // 페이지에 렌더링할 React 엘리먼트를 반환하는 작고 재사용 가능한 코드조각
 function App() {
+  //Todo를 가지고 있는 state
   const[items, setItems]= useState([])
+  //로딩여부를 가리는 state
+  const[loading, setLoading] = useState(true);
 
   useEffect(() => {
     //백엔드에게 요청
@@ -27,7 +30,10 @@ function App() {
     //     console.error("There was an error!", error); // 에러 처리
     // });
     call("/todo","GET") 
-    .then(result => setItems(result.data))
+    .then(result => {
+      setItems(result.data);
+      setLoading(false);
+    })    
   },[])
   
 
@@ -54,7 +60,7 @@ function App() {
     // setItems([...items])
 
     //백엔드 연결---------------------------------
-    call("/todo","PUT",item)
+    call("/todo","PUT",item) // 이제는 /todo에 접근하려면 토큰인증이 필요하다.
     .then(result => setItems(result.data))
   }
     
@@ -88,16 +94,59 @@ function App() {
   );
   // JSX문법 : 자바스크립트 코드 안에 HTML코드가 들어가는것
   // Babel : JSX로 작성된 자바스크립트를 순수 자바스크립트로 만들어주는 라이브러리
-  return (
+
+
+  //navigatinBar 추가
+  let navigatinBar = (
+    <AppBar position='static'>
+      <Toolbar>
+        <Grid justifyContent="space-between" container>
+          <Grid item>
+            <Typography variant='h6' > 오늘의 할일</Typography>
+          </Grid>
+          <Grid item>
+            {/* variant의 속성값 : contained 입체적인 버튼(배경 색상 포함)
+                                  outlined 테두리만 있는 버튼
+                                  text 텍스트만 있는 버튼 */}
+            <Button color='inherit' variant='text' onClick={signout}>
+              로그아웃
+            </Button>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </AppBar>
+  )
+
+  // 로딩중이 아닐 때 렌더링할 화면
+  let todoListPage=(
     <div className="App">
+        {navigatinBar}
       <Container maxWidth="md">
         <AddTodo addItem={addItem}/>
       {/* props를 컴포넌트에 전달하기
       이름={useState값} */}
-      <div className="TodoList">{todoItems}</div>
+      <div className="TodoList">
+        {todoItems}
+      </div>
       </Container>
     </div>
+  )
 
+  //로딩중일 때 렌더링 할 부분
+  let loadingPage = <h1>로딩중...</h1>
+  let content = loadingPage;
+
+  //loading : ture -> 로딩중
+  //loading : false -> 로딩중이 아닌상태
+  if(!loading){
+    //로딩중이 아니면 todoListPage를 렌더링
+    content = todoListPage;
+  }
+
+  return (
+    <div className='App'>
+      {content}
+    </div>
   );
 }
 
